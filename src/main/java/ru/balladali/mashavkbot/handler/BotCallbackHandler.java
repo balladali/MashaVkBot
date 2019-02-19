@@ -1,10 +1,9 @@
 package ru.balladali.mashavkbot.handler;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.vk.api.sdk.callback.CallbackApi;
 import com.vk.api.sdk.objects.messages.Message;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import ru.balladali.mashavkbot.core.entity.VkRequest;
 import ru.balladali.mashavkbot.core.handlers.MessageHandler;
 
 import java.util.List;
@@ -14,20 +13,26 @@ public class BotCallbackHandler extends CallbackApi {
     private List<MessageHandler> messageHandlers;
     private String confirmationCode;
 
+    private Gson gson = new Gson();
+
     public BotCallbackHandler(List<MessageHandler> messageHandlers, String confirmationCode) {
         this.messageHandlers = messageHandlers;
         this.confirmationCode = confirmationCode;
     }
 
-    public ResponseEntity<String> handle(VkRequest vkRequest) {
-        switch (vkRequest.getType()) {
+    public String handle(JsonObject vkRequest) {
+        String type = vkRequest.get("type").getAsString();
+        Integer groupId = vkRequest.get("group_id").getAsInt();
+        switch (type) {
             case "confirmation":
-                return new ResponseEntity<>(confirmationCode, HttpStatus.OK);
+                return confirmationCode;
             case "message_new":
-                messageNew(vkRequest.getGroupId(), (Message) vkRequest.getObject());
-            default:
-                return new ResponseEntity<>(HttpStatus.OK);
+                JsonObject object = vkRequest.getAsJsonObject("object");
+                Message message = gson.fromJson(object, Message.class);
+                messageNew(groupId, message);
+                break;
         }
+        return "ok";
     }
 
     @Override
