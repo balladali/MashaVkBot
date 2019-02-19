@@ -1,10 +1,11 @@
 server:
-  port: 8080
+  port: ${PORT:8080}
 spring:
   profiles:
    active: ${PROFILE:}
 credential:
   vk:
+    confirmation-code: ${VK_CONFIRMATION_CODE}
     group-id: ${VK_GROUP_ID:}
     key: ${VK_KEY:}
   youtube:

@@ -37,7 +37,9 @@ public class BotConfig {
 
     @Bean
     @Profile("callback")
-    public BotCallbackHandler mashaCallbackHandler(List<MessageHandler> messageHandlers) {
-        return new BotCallbackHandler(messageHandlers);
+    public BotCallbackHandler mashaCallbackHandler(List<MessageHandler> messageHandlers,
+                                                   @Value("${credential.vk.confirmation-code}")
+                                                           String confirmationCode) {
+        return new BotCallbackHandler(messageHandlers, confirmationCode);
     }
 }
