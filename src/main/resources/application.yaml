@@ -1,0 +1,14 @@
+server:
+  port: 8080
+spring:
+  profiles:
+   active: ${PROFILE:}
+credential:
+  vk:
+    group-id: ${VK_GROUP_ID:}
+    key: ${VK_KEY:}
+  youtube:
+    key: ${YOUTUBE_API_KEY:}
+search:
+  youtube:
+    maxresults: ${MAX_RESULTS:10}
