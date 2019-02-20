@@ -13,6 +13,8 @@ public abstract class AbstractMessageHandler implements MessageHandler {
     private VkApiClient client;
     private GroupActor groupActor;
 
+    protected static Integer lastMessageId = -1;
+
     public AbstractMessageHandler(VkApiClient client, GroupActor groupActor) {
         this.client = client;
         this.groupActor = groupActor;

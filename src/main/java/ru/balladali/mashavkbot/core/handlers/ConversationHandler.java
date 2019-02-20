@@ -25,8 +25,6 @@ public class ConversationHandler extends AbstractMessageHandler {
     private final String USER_NAME = "Masha";
     private final String ANSWER_FIELD = "answer";
 
-    private static Integer lastMessageId = -1;
-
     private Map<Integer, BotContext> contextMap = new HashMap<>();
 
     public ConversationHandler(VkApiClient client, GroupActor groupActor) {
@@ -35,10 +33,6 @@ public class ConversationHandler extends AbstractMessageHandler {
 
     @Override
     public void handle(Message entity) {
-        if (Objects.equals(entity.getId(), lastMessageId)) {
-            log.info("Answer for message with id = {} already sent", entity.getId());
-            return;
-        }
         String message = entity.getBody();
         Integer chatId = entity.getChatId() == null ? entity.getUserId() : entity.getChatId();
         message = message.replaceAll("Маша,", "").replaceAll("маша,", "").trim();
@@ -48,8 +42,10 @@ public class ConversationHandler extends AbstractMessageHandler {
     }
 
     @Override
-    public boolean needHandle(String message) {
-        return StringUtils.containsIgnoreCase(message, "Маша");
+    public boolean needHandle(Message message) {
+        log.info("Last message id = {}; Message Id = {}", lastMessageId, message.getId());
+        return !Objects.equals(message.getId(), lastMessageId)
+                && StringUtils.containsIgnoreCase(message.getBody(), "Маша");
     }
 
     private String getAnswer(String message, Integer chatId) {

@@ -22,7 +22,7 @@ public class BotLongPollHandler extends CallbackApiLongPoll {
     @Override
     public void messageNew(Integer groupId, Message message) {
         for (MessageHandler messageHandler : messageHandlers) {
-            if (messageHandler.needHandle(message.getBody())) {
+            if (messageHandler.needHandle(message)) {
                 messageHandler.handle(message);
                 return;
             }

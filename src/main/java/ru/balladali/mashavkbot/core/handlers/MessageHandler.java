@@ -6,7 +6,7 @@ public interface MessageHandler {
 
     void handle(Message entity);
 
-    boolean needHandle(String message);
+    boolean needHandle(Message message);
 
     void sendAnswer(Message messageEntity, String answer);
 }

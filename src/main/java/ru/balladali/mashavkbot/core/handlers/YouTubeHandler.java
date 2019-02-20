@@ -10,6 +10,7 @@ import ru.balladali.mashavkbot.core.services.YouTubeService;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 public class YouTubeHandler extends AbstractMessageHandler {
     private YouTubeService youTubeService;
@@ -20,26 +21,25 @@ public class YouTubeHandler extends AbstractMessageHandler {
     }
 
     @Override
-    public void handle(Message entity) {
-        String message = entity.getBody();
-        if (needHandle(message)) {
-            String searchQuery = message.toLowerCase().replace("маша, найди", "").trim();
-            if (Strings.isNullOrEmpty(searchQuery)) {
-                sendAnswer(entity, "Ну и чего искать-то?");
-            } else {
-                try {
-                    List<YouTubeVideoEntity> foundVideos = youTubeService.search(searchQuery);
-                    sendAnswer(entity, foundVideos.get(0).getLink());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+    public void handle(Message message) {
+        String searchQuery = message.getBody().toLowerCase().replace("маша, найди", "").trim();
+        if (Strings.isNullOrEmpty(searchQuery)) {
+            sendAnswer(message, "Ну и чего искать-то?");
+        } else {
+            try {
+                List<YouTubeVideoEntity> foundVideos = youTubeService.search(searchQuery);
+                sendAnswer(message, foundVideos.get(0).getLink());
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
+        lastMessageId = message.getId();
     }
 
     @Override
-    public boolean needHandle(String message) {
-        return StringUtils.containsIgnoreCase(message, "Маша, найди");
+    public boolean needHandle(Message message) {
+        return !Objects.equals(message.getId(), lastMessageId)
+                && StringUtils.containsIgnoreCase(message.getBody(), "Маша, найди");
     }
 
 }
