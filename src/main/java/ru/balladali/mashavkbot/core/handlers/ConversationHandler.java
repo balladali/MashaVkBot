@@ -3,6 +3,7 @@ package ru.balladali.mashavkbot.core.handlers;
 import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.GroupActor;
 import com.vk.api.sdk.objects.messages.Message;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
@@ -16,6 +17,7 @@ import ru.balladali.mashavkbot.core.entity.BotContext;
 
 import java.util.*;
 
+@Slf4j
 public class ConversationHandler extends AbstractMessageHandler {
 
     private final String ANSWER_URL = "http://p-bot.ru/api/getAnswer";
@@ -23,7 +25,7 @@ public class ConversationHandler extends AbstractMessageHandler {
     private final String USER_NAME = "Masha";
     private final String ANSWER_FIELD = "answer";
 
-    private Integer lastMessageId = -1;
+    private static Integer lastMessageId = -1;
 
     private Map<Integer, BotContext> contextMap = new HashMap<>();
 
@@ -34,6 +36,7 @@ public class ConversationHandler extends AbstractMessageHandler {
     @Override
     public void handle(Message entity) {
         if (Objects.equals(entity.getId(), lastMessageId)) {
+            log.info("Answer for message with id = {} already sent", entity.getId());
             return;
         }
         String message = entity.getBody();
