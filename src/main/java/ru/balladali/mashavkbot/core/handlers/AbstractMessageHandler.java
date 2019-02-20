@@ -7,13 +7,15 @@ import com.vk.api.sdk.exceptions.ClientException;
 import com.vk.api.sdk.objects.messages.Message;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Objects;
+
 @Slf4j
 public abstract class AbstractMessageHandler implements MessageHandler {
 
     private VkApiClient client;
     private GroupActor groupActor;
 
-    protected static Integer lastMessageId = -1;
+    protected volatile Integer lastMessageId = -1;
 
     public AbstractMessageHandler(VkApiClient client, GroupActor groupActor) {
         this.client = client;
@@ -29,5 +31,9 @@ public abstract class AbstractMessageHandler implements MessageHandler {
                 log.error("Error during message sending", e);
             }
         }
+    }
+
+    protected boolean isAnswerSent(Message message) {
+        return Objects.equals(message.getId(), lastMessageId);
     }
 }

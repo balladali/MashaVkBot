@@ -43,8 +43,9 @@ public class ConversationHandler extends AbstractMessageHandler {
 
     @Override
     public boolean needHandle(Message message) {
-        log.info("Last message id = {}; Message Id = {}", lastMessageId, message.getId());
-        return !Objects.equals(message.getId(), lastMessageId)
+        log.info("Message ID = {}, last message ID = {}, handler = {}",
+                message.getId(), lastMessageId, this.getClass());
+        return !isAnswerSent(message)
                 && StringUtils.containsIgnoreCase(message.getBody(), "Маша");
     }
 
