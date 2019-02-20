@@ -23,6 +23,8 @@ public class ConversationHandler extends AbstractMessageHandler {
     private final String USER_NAME = "Masha";
     private final String ANSWER_FIELD = "answer";
 
+    private Integer lastMessageId = -1;
+
     private Map<Integer, BotContext> contextMap = new HashMap<>();
 
     public ConversationHandler(VkApiClient client, GroupActor groupActor) {
@@ -31,11 +33,15 @@ public class ConversationHandler extends AbstractMessageHandler {
 
     @Override
     public void handle(Message entity) {
+        if (Objects.equals(entity.getId(), lastMessageId)) {
+            return;
+        }
         String message = entity.getBody();
         Integer chatId = entity.getChatId() == null ? entity.getUserId() : entity.getChatId();
         message = message.replaceAll("Маша,", "").replaceAll("маша,", "").trim();
         String answer = getAnswer(message, chatId);
         sendAnswer(entity, answer);
+        lastMessageId = entity.getId();
     }
 
     @Override
