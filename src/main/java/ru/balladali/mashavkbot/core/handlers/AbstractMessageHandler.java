@@ -33,7 +33,7 @@ public abstract class AbstractMessageHandler implements MessageHandler {
         }
     }
 
-    protected boolean isAnswerSent(Message message) {
+    protected synchronized boolean isAnswerSent(Message message) {
         return Objects.equals(message.getId(), lastMessageId);
     }
 }
